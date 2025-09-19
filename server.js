@@ -7,34 +7,30 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
+app.use(express.json()); // parsea JSON automáticamente
 
-// Solo parsea JSON si hay body
-app.use((req, res, next) => {
-  if (req.method === "POST" || req.method === "PUT") {
-    express.json()(req, res, next);
-  } else {
-    next();
-  }
-});
-
-// Configuración de MySQL
+// =================== CONEXIÓN A MYSQL ===================
 const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-
-
+  host: process.env.MYSQLHOST,       // Railway host
+  port: Number(process.env.MYSQLPORT), // Railway port
+  user: process.env.MYSQLUSER,       // Railway user
+  password: process.env.MYSQLPASSWORD, // Railway password
+  database: process.env.MYSQLDATABASE // Railway database
 });
 
 // Conectar a la base de datos
 db.connect(err => {
   if (err) {
     console.error("Error al conectar a MySQL:", err.message);
+    process.exit(1); // detener la app si falla la conexión
   } else {
     console.log("Conectado a la base de datos");
   }
+});
+
+// =================== RUTA DE PRUEBA ===================
+app.get("/", (req, res) => {
+  res.send("API funcionando 🚀");
 });
 
 // =================== RUTAS CRUD ===================
@@ -93,7 +89,7 @@ app.delete("/users/:id", (req, res) => {
   });
 });
 
-// INICIAR SERVIDOR
+// =================== INICIAR SERVIDOR ===================
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
