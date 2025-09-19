@@ -3,9 +3,7 @@ import mysql from "mysql2";
 import cors from "cors";
 
 const app = express();
-
-// Puerto dinámico para Railway
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 // Middleware
 app.use(cors());
@@ -19,28 +17,13 @@ app.use((req, res, next) => {
   }
 });
 
-// =================== CONFIGURACIÓN DE BASE DE DATOS ===================
-
-// Conexión local (para pruebas)
-const localDB = {
+// Configuración de MySQL
+const db = mysql.createConnection({
   host: "127.0.0.1",
   user: "root",
   password: "12345678",
   database: "crud_db",
-};
-
-// Conexión remota en Railway
-const remoteDB = {
-  host: process.env.DB_HOST,       // Ej: 'containers-us-west-123.railway.app'
-  user: process.env.DB_USER,       // Ej: 'root'
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-};
-
-// Cambiar según USE_REMOTE_DB
-const dbConfig = process.env.USE_REMOTE_DB === "true" ? remoteDB : localDB;
-
-const db = mysql.createConnection(dbConfig);
+});
 
 // Conectar a la base de datos
 db.connect(err => {
@@ -65,7 +48,7 @@ app.post("/users", (req, res) => {
   });
 });
 
-// READ ALL: Listar todos los usuarios
+// READ: Listar todos los usuarios
 app.get("/users", (req, res) => {
   const sql = "SELECT * FROM users";
   db.query(sql, (err, results) => {
@@ -107,7 +90,7 @@ app.delete("/users/:id", (req, res) => {
   });
 });
 
-// =================== INICIAR SERVIDOR ===================
+// INICIAR SERVIDOR
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
