@@ -19,10 +19,10 @@ app.use((req, res, next) => {
 
 // Configuración de MySQL
 const db = mysql.createConnection({
-  host: "127.0.0.1",
+  host: "mysql.railway.internal",
   user: "root",
-  password: "12345678",
-  database: "crud_db",
+  password: "DsfyJzlcbhKZZZxVJiLbGWvdqjLsXNhp",
+  database: "railway",
 });
 
 // Conectar a la base de datos
